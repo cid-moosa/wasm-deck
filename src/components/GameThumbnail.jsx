@@ -1,5 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Gamepad2 } from 'lucide-react';
+
+function getInitialProxyUrl(rawUrl) {
+  if (!rawUrl) return '';
+  // Steam CDN headers are 100% CORS-friendly and require no proxy
+  if (rawUrl.includes('steamstatic.com')) return rawUrl;
+  // Wasmarcade enforces strict hotlink blocks and lacks CORS headers; proxy via Cloudflare-backed wsrv.nl
+  if (rawUrl.includes('wasmarcade.com')) {
+    return `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&w=480&output=webp`;
+  }
+  return rawUrl;
+}
 
 export function GameThumbnail({ 
   src, 
@@ -9,10 +20,29 @@ export function GameThumbnail({
   aspect = "aspect-video",
   fallbackClassName = ""
 }) {
+  const [currentSrc, setCurrentSrc] = useState(() => getInitialProxyUrl(src));
+  const [hasTriedFallback, setHasTriedFallback] = useState(false);
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  // Elegant initials for fallback
+  useEffect(() => {
+    setCurrentSrc(getInitialProxyUrl(src));
+    setHasTriedFallback(false);
+    setError(false);
+    setLoaded(false);
+  }, [src]);
+
+  const handleError = () => {
+    if (!hasTriedFallback && src && !currentSrc.includes('wsrv.nl')) {
+      // Try wsrv.nl proxy as resilient secondary tier
+      setHasTriedFallback(true);
+      setCurrentSrc(`https://wsrv.nl/?url=${encodeURIComponent(src)}&w=480&output=webp`);
+    } else {
+      setError(true);
+    }
+  };
+
+  // Initials for final fallback
   const initials = title
     ? title.replace(/[^a-zA-Z0-9 ]/g, '').split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
     : "WD";
@@ -27,17 +57,14 @@ export function GameThumbnail({
     "hubs": "from-slate-900 via-purple-950/30 to-slate-900"
   }[category] || "from-slate-900 to-slate-950";
 
-  if (!src || error) {
+  if (!currentSrc || error) {
     return (
       <div 
         className={`relative ${aspect} w-full overflow-hidden bg-gradient-to-br ${categoryPalettes} flex items-center justify-center border-b border-white/[0.06] select-none ${className} ${fallbackClassName}`}
       >
-        {/* Subtle radial sheen */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(99,102,241,0.12),transparent_70%)]" />
-        
         <div className="relative z-10 flex flex-col items-center justify-center p-3 text-center">
-          <div className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/[0.1] flex items-center justify-center shadow-xl backdrop-blur-md mb-2">
-            <span className="font-mono font-bold text-sm text-indigo-300 tracking-wider">
+          <div className="w-10 h-10 rounded-lg bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shadow-lg backdrop-blur-md mb-1.5">
+            <span className="font-mono font-bold text-xs text-indigo-300 tracking-wider">
               {initials}
             </span>
           </div>
@@ -45,42 +72,35 @@ export function GameThumbnail({
             {title}
           </span>
           <span className="text-[9px] uppercase tracking-wider text-slate-500 font-mono mt-0.5">
-            {category || "WebAssembly Engine"}
+            {category || "WebAssembly"}
           </span>
         </div>
-
-        {/* Soft bottom vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#12151F] via-transparent to-transparent pointer-events-none" />
       </div>
     );
   }
 
   return (
     <div className={`relative ${aspect} w-full overflow-hidden bg-[#0D1017] ${className}`}>
-      {/* Premium shimmer skeleton while loading */}
+      {/* Shimmer skeleton while loading */}
       {!loaded && (
-        <div className="absolute inset-0 bg-slate-900 flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.05] to-transparent animate-shimmer" />
-          <Gamepad2 className="w-6 h-6 text-slate-700/60" />
+        <div className="absolute inset-0 bg-[#0E1017] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent animate-shimmer" />
+          <Gamepad2 className="w-5 h-5 text-slate-700/50" />
         </div>
       )}
 
-      {/* Actual Thumbnail Image with no-referrer for hotlink bypass */}
+      {/* Actual Thumbnail Image with hotlink & CORS resilience */}
       <img
-        src={src}
+        src={currentSrc}
         alt={title}
         loading="lazy"
         referrerPolicy="no-referrer"
-        crossOrigin="anonymous"
         onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
-        className={`w-full h-full object-cover transition-all duration-500 ease-out ${
-          loaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+        onError={handleError}
+        className={`w-full h-full object-cover transition-opacity duration-300 ease-out ${
+          loaded ? 'opacity-100' : 'opacity-0'
         }`}
       />
-
-      {/* Smooth dark vignette at bottom for crisp title separation */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#12151F] via-[#12151F]/40 to-transparent pointer-events-none" />
     </div>
   );
 }

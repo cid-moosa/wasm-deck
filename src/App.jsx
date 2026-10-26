@@ -84,7 +84,6 @@ export default function App() {
   const [deckReadyOnly, setDeckReadyOnly] = useState(false);
   const [sortBy, setSortBy] = useState("featured");
   const [viewMode, setViewMode] = useState("grid");
-  const [visibleCount, setVisibleCount] = useState(36);
 
   // Modals & Test Log
   const [activeGame, setActiveGame] = useState(null);
@@ -430,59 +429,27 @@ export default function App() {
             </button>
           </div>
         ) : viewMode === 'grid' ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredGames.slice(0, visibleCount).map(game => (
-                <GameCard
-                  key={game.id}
-                  game={game}
-                  onPlayInDeck={handlePlayInDeck}
-                  isFavorite={favorites.has(game.id)}
-                  onToggleFavorite={handleToggleFavorite}
-                  onDeleteCustomGame={handleDeleteCustomGame}
-                  onInspectGame={setInspectedGame}
-                />
-              ))}
-            </div>
-
-            {filteredGames.length > visibleCount && (
-              <div className="flex justify-center mt-8 mb-4">
-                <button
-                  onClick={() => {
-                    playHudClick();
-                    setVisibleCount(prev => prev + 36);
-                  }}
-                  className="min-btn py-2.5 px-6 font-mono text-xs text-slate-300 hover:text-white"
-                >
-                  Load More ({visibleCount} of {filteredGames.length})
-                </button>
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredGames.map(game => (
+              <GameCard
+                key={game.id}
+                game={game}
+                onPlayInDeck={handlePlayInDeck}
+                isFavorite={favorites.has(game.id)}
+                onToggleFavorite={handleToggleFavorite}
+                onDeleteCustomGame={handleDeleteCustomGame}
+                onInspectGame={setInspectedGame}
+              />
+            ))}
+          </div>
         ) : (
-          <>
-            <ListView
-              games={filteredGames.slice(0, visibleCount)}
-              onPlayInDeck={handlePlayInDeck}
-              favorites={favorites}
-              onToggleFavorite={handleToggleFavorite}
-              onDeleteCustomGame={handleDeleteCustomGame}
-            />
-
-            {filteredGames.length > visibleCount && (
-              <div className="flex justify-center mt-6 mb-4">
-                <button
-                  onClick={() => {
-                    playHudClick();
-                    setVisibleCount(prev => prev + 36);
-                  }}
-                  className="min-btn py-2.5 px-6 font-mono text-xs text-slate-300 hover:text-white"
-                >
-                  Load More ({visibleCount} of {filteredGames.length})
-                </button>
-              </div>
-            )}
-          </>
+          <ListView
+            games={filteredGames}
+            onPlayInDeck={handlePlayInDeck}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+            onDeleteCustomGame={handleDeleteCustomGame}
+          />
         )}
 
       </main>

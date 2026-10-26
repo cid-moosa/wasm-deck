@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   X, 
   PlusCircle, 
@@ -21,7 +21,8 @@ function GithubIcon({ className = "w-4 h-4" }) {
   );
 }
 
-export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
+export function CustomPortModal({ isOpen = true, onClose, onAddCustomGame, onAddGame }) {
+  const addGame = onAddCustomGame || onAddGame;
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("modern-indie");
   const [engine, setEngine] = useState("Custom Emscripten WASM");
@@ -34,9 +35,8 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
   const [notes, setNotes] = useState("");
   const [mirrorsText, setMirrorsText] = useState("");
   const [error, setError] = useState("");
-  const [copiedUrl, setCopiedUrl] = useState(false);
 
-  if (!isOpen) return null;
+  if (isOpen === false) return null;
 
   const validateUrl = (url) => {
     try {
@@ -47,17 +47,10 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
     }
   };
 
-  const handleProposeToGitHub = (e) => {
-    if (e) e.preventDefault();
+  const computedGitHubUrl = useMemo(() => {
     if (!primaryUrl.trim()) {
-      setError("Please provide a valid game URL before submitting to GitHub.");
-      return;
+      return "https://github.com/cid-moosa/wasm-deck/issues/new?template=game_proposal.md";
     }
-    if (!validateUrl(primaryUrl.trim())) {
-      setError("Invalid game URL format. Please include http:// or https://");
-      return;
-    }
-
     const gameTitle = title.trim() || "New WebAssembly Port";
     const issueTitle = `[Game Proposal]: ${gameTitle}`;
     const issueBody = `### 🎮 WebAssembly Game Proposal
@@ -79,10 +72,8 @@ ${notes.trim() || 'Proposed via WASM//DECK community submit portal.'}
 ---
 *Submitted from https://cid-moosa.github.io/wasm-deck/*`;
 
-    const githubUrl = `https://github.com/cid-moosa/wasm-deck/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
-    playHudBleep();
-    window.open(githubUrl, '_blank', 'noopener,noreferrer');
-  };
+    return `https://github.com/cid-moosa/wasm-deck/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
+  }, [title, primaryUrl, category, engine, memoryEst, multiplayer, iframeCompatible, thumbnailUrl, mirrorsText, notes]);
 
   const handleSaveLocally = (e) => {
     e.preventDefault();
@@ -123,43 +114,57 @@ ${notes.trim() || 'Proposed via WASM//DECK community submit portal.'}
     };
 
     playHudBleep();
-    onAddCustomGame(newGame);
+    if (addGame) addGame(newGame);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn">
-      <div className="liquid-glass-modal rounded-2xl max-w-xl w-full border border-white/[0.14] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-modalEnter">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn cursor-pointer"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="liquid-glass-modal rounded-2xl max-w-xl w-full border border-white/[0.16] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-modalEnter cursor-default"
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-5">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-inner">
+            <div className="p-2.5 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-inner">
               <PlusCircle className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-display font-semibold text-lg text-white">Submit or Add Game URL</h2>
-              <p className="text-xs text-slate-400">Propose a new game to the public GitHub catalog or test locally</p>
+              <h2 className="font-display font-semibold text-lg text-white">Submit Game to Catalog</h2>
+              <p className="text-xs text-slate-400">Propose a new game URL to GitHub or test in browser</p>
             </div>
           </div>
           <button 
             onClick={() => { playHudClick(); onClose(); }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Community Info Banner */}
-        <div className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-transparent border border-indigo-500/20 flex items-start gap-3">
-          <GithubIcon className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+        {/* Community Info Banner with Direct GitHub Link */}
+        <a 
+          href="https://github.com/cid-moosa/wasm-deck/issues/new?template=game_proposal.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/10 to-transparent border border-indigo-500/25 flex items-start gap-3 hover:border-indigo-400/40 transition-colors cursor-pointer group"
+        >
+          <GithubIcon className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
           <div className="text-xs">
-            <div className="font-medium text-indigo-200 mb-0.5">Have a WebAssembly game not listed here?</div>
+            <div className="font-semibold text-indigo-200 mb-0.5 flex items-center gap-1.5">
+              <span>Have a WebAssembly game to add?</span>
+              <ExternalLink className="w-3 h-3 text-indigo-400 opacity-70" />
+            </div>
             <p className="text-slate-400 leading-relaxed">
-              Fill in the game details below and click <strong className="text-white">"Submit to GitHub"</strong>. It will open a pre-filled issue on the repository so the creator can verify and publish it to the live website!
+              Anyone can propose new game URLs directly to the maintainer on GitHub. Enter the game details below and click <strong className="text-white">Submit to GitHub</strong>!
             </p>
           </div>
-        </div>
+        </a>
 
         {error && (
           <div className="p-3 mb-4 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
@@ -171,27 +176,25 @@ ${notes.trim() || 'Proposed via WASM//DECK community submit portal.'}
           
           {/* Title */}
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Game / Port Title *</label>
+            <label className="block text-slate-300 font-semibold mb-1">Game / Port Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Sonic Mania Web, Portal Flash Edition, Godot 4 Web Demo"
               className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-all"
-              required
             />
           </div>
 
           {/* Primary URL */}
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Playable WASM Game URL *</label>
+            <label className="block text-slate-300 font-semibold mb-1">Playable WASM Game URL</label>
             <input
               type="url"
               value={primaryUrl}
               onChange={(e) => setPrimaryUrl(e.target.value)}
               placeholder="https://... or http://localhost:8080/index.html"
               className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-all"
-              required
             />
           </div>
 
@@ -278,28 +281,31 @@ ${notes.trim() || 'Proposed via WASM//DECK community submit portal.'}
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/[0.08]">
-            <button
-              type="button"
-              onClick={handleProposeToGitHub}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              title="Open GitHub Issue to submit this game URL to the maintainer"
+            {/* Direct reliable Anchor tag for GitHub submission - impervious to popup blockers */}
+            <a
+              href={computedGitHubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => { playHudBleep(); }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              title="Open GitHub Issue to submit this game URL to maintainer"
             >
               <GithubIcon className="w-4 h-4" />
               <span>Submit to Creator on GitHub</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-            </button>
+            </a>
 
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               <button
                 type="button"
                 onClick={() => { playHudClick(); onClose(); }}
-                className="py-2.5 px-3.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all"
+                className="py-2.5 px-3.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="py-2.5 px-4 rounded-xl bg-white/[0.1] hover:bg-white/[0.18] border border-white/20 text-white font-medium transition-all"
+                className="py-2.5 px-4 rounded-xl bg-white/[0.1] hover:bg-white/[0.18] border border-white/20 text-white font-medium transition-all cursor-pointer"
               >
                 Save Locally (Test)
               </button>

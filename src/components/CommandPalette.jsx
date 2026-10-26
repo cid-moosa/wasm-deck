@@ -8,6 +8,7 @@ export function CommandPalette({
   onClose,
   games,
   onPlayInDeck,
+  onSelectGame,
   favorites,
   onToggleFavorite
 }) {
@@ -39,9 +40,18 @@ export function CommandPalette({
 
   const handleLaunchGame = (game) => {
     playLaunchEngine();
-    if (game.iframeCompatible) {
-      onPlayInDeck(game);
+    if (onSelectGame) {
+      onSelectGame(game);
+    } else if (onPlayInDeck) {
+      if (game.iframeCompatible) {
+        onPlayInDeck(game);
+      } else {
+        window.open(game.primaryUrl, '_blank', 'noopener,noreferrer');
+      }
     } else {
+      if (game.iframeCompatible) {
+        // fallback
+      }
       window.open(game.primaryUrl, '_blank', 'noopener,noreferrer');
     }
     onClose();
@@ -75,8 +85,14 @@ export function CommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div className="glass-panel-heavy rounded-xl max-w-2xl w-full border border-white/[0.1] shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-modalEnter">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-xl animate-fadeIn cursor-pointer"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="liquid-glass-modal rounded-2xl max-w-2xl w-full border border-white/[0.16] shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-modalEnter cursor-default"
+      >
         
         {/* Search Input Bar */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.08] bg-[#0A0D15]">

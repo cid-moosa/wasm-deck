@@ -71,22 +71,80 @@
 .clean-bg {
   background-color: #07080C;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 60%),
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 60%),
     radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
   background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px;
 }
 
-/* Liquid Glass Cards */
+/* Ambient Fluid Background Refraction Orbs for Liquid Glass */
+@keyframes float-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(120px, 80px) scale(1.15); }
+  66% { transform: translate(-60px, 120px) scale(0.95); }
+}
+
+@keyframes float-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  33% { transform: translate(-140px, -70px) scale(0.9); }
+  66% { transform: translate(80px, -110px) scale(1.2); }
+}
+
+@keyframes float-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(90px, -90px) scale(1.1); }
+  66% { transform: translate(-100px, 60px) scale(1.05); }
+}
+
+.liquid-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  opacity: 0.28;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.liquid-blob-1 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #6366f1 0%, rgba(99, 102, 241, 0) 70%);
+  top: 5%;
+  left: 8%;
+  animation: float-blob-1 22s ease-in-out infinite;
+}
+
+.liquid-blob-2 {
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, #06b6d4 0%, rgba(6, 182, 212, 0) 70%);
+  top: 35%;
+  right: 4%;
+  animation: float-blob-2 26s ease-in-out infinite;
+}
+
+.liquid-blob-3 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #a855f7 0%, rgba(168, 85, 247, 0) 70%);
+  bottom: 8%;
+  left: 25%;
+  animation: float-blob-3 24s ease-in-out infinite;
+}
+
+/* Liquid Glass Cards with VisionOS Specular Rim */
 .minimal-card, .liquid-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(255, 255, 255, 0.04) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  box-shadow: var(--liquid-glass-shadow);
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.28), 
+              inset 0 -1px 1px 0 rgba(0, 0, 0, 0.45), 
+              0 12px 36px 0 rgba(0, 0, 0, 0.5);
   transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.24s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
@@ -95,29 +153,153 @@
 
 .minimal-card:hover, .liquid-card:hover {
   transform: translateY(-4px);
-  border-color: var(--border-focus);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 60%, rgba(255, 255, 255, 0.08) 100%);
-  box-shadow: var(--liquid-glass-hover-shadow);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.09) 100%);
+  box-shadow: inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.45),
+              0 24px 48px -10px rgba(0, 0, 0, 0.75),
+              0 0 35px 0 rgba(99, 102, 241, 0.22);
 }
 
 /* Liquid Glass Header */
 .liquid-glass-header {
-  background: linear-gradient(180deg, rgba(10, 12, 18, 0.85) 0%, rgba(7, 8, 12, 0.75) 100%);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, rgba(12, 14, 22, 0.88) 0%, rgba(8, 9, 15, 0.78) 100%);
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Liquid Glass Modals */
 .liquid-glass-modal, .glass-panel-heavy {
-  background: linear-gradient(145deg, rgba(16, 19, 29, 0.94) 0%, rgba(8, 10, 15, 0.96) 100%);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+  background: linear-gradient(145deg, rgba(14, 17, 28, 0.95) 0%, rgba(7, 9, 15, 0.97) 100%);
+  backdrop-filter: blur(36px) saturate(220%);
+  -webkit-backdrop-filter: blur(36px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.35),
               0 24px 64px -12px rgba(0, 0, 0, 0.85),
-              0 0 40px 0 rgba(99, 102, 241, 0.1);
+              0 0 50px 0 rgba(99, 102, 241, 0.14);
+}
+
+/* =========================================================================
+   Visual Theme Overrides
+   ========================================================================= */
+
+/* 1. Cyberpunk Neon Theme */
+.theme-cyberpunk-neon {
+  --bg-canvas: #05060A;
+  --accent: #00F0FF;
+  --accent-cyan: #00F0FF;
+  --border-focus: #00F0FF;
+}
+
+.theme-cyberpunk-neon .clean-bg {
+  background-color: #05060A;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 240, 255, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 0, 122, 0.16) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(138, 43, 226, 0.14) 0px, transparent 60%);
+}
+
+.theme-cyberpunk-neon .liquid-blob-1 {
+  background: radial-gradient(circle, #00f0ff 0%, transparent 70%);
+  opacity: 0.22;
+}
+
+.theme-cyberpunk-neon .liquid-blob-2 {
+  background: radial-gradient(circle, #ff007a 0%, transparent 70%);
+  opacity: 0.22;
+}
+
+.theme-cyberpunk-neon .liquid-blob-3 {
+  background: radial-gradient(circle, #8a2be2 0%, transparent 70%);
+  opacity: 0.22;
+}
+
+.theme-cyberpunk-neon .liquid-card:hover {
+  border-color: #00F0FF;
+  box-shadow: inset 0 1.5px 2px 0 rgba(0, 240, 255, 0.5), 0 0 35px 0 rgba(0, 240, 255, 0.3);
+}
+
+.theme-cyberpunk-neon .min-btn-primary {
+  background: linear-gradient(135deg, #00F0FF 0%, #0088FF 100%);
+  color: #05060A;
+  border-color: #00F0FF;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+}
+
+/* 2. Obsidian Minimal Theme */
+.theme-obsidian-minimal {
+  --bg-canvas: #060709;
+}
+
+.theme-obsidian-minimal .clean-bg {
+  background-color: #060709;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.theme-obsidian-minimal .liquid-blob {
+  opacity: 0 !important;
+  display: none;
+}
+
+.theme-obsidian-minimal .liquid-card {
+  background: #0B0D13;
+  backdrop-filter: none;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.theme-obsidian-minimal .liquid-card:hover {
+  background: #10131B;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* 3. Retro Arcade CRT Theme */
+.theme-retro-crt {
+  --bg-canvas: #030804;
+  --accent: #39FF14;
+  --text-primary: #D1FFCD;
+}
+
+.theme-retro-crt .clean-bg {
+  background-color: #030804;
+  background-image: 
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 1px, transparent 1px, transparent 2px),
+    radial-gradient(at 50% 50%, rgba(57, 255, 20, 0.08) 0px, transparent 75%);
+}
+
+.theme-retro-crt .liquid-blob-1 {
+  background: radial-gradient(circle, #39ff14 0%, transparent 70%);
+  opacity: 0.18;
+}
+
+.theme-retro-crt .liquid-blob-2 {
+  background: radial-gradient(circle, #ffb000 0%, transparent 70%);
+  opacity: 0.16;
+}
+
+.theme-retro-crt .liquid-blob-3 {
+  background: radial-gradient(circle, #00ff88 0%, transparent 70%);
+  opacity: 0.18;
+}
+
+.theme-retro-crt .liquid-card {
+  border-color: rgba(57, 255, 20, 0.25);
+  box-shadow: inset 0 1px 1px 0 rgba(57, 255, 20, 0.2), 0 0 20px rgba(57, 255, 20, 0.08);
+}
+
+.theme-retro-crt .liquid-card:hover {
+  border-color: #39FF14;
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.35);
+}
+
+.theme-retro-crt .min-btn-primary {
+  background: linear-gradient(135deg, #39FF14 0%, #00CC33 100%);
+  color: #030804;
+  border-color: #39FF14;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
 }
 
 /* Liquid Glass Pill / Buttons */

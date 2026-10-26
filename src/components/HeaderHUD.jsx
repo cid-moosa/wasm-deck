@@ -6,7 +6,9 @@ import {
   VolumeX, 
   ClipboardList, 
   HardDrive,
-  Cpu
+  Cpu,
+  Info,
+  Palette
 } from 'lucide-react';
 import { playHudClick, setAudioMuted } from '../utils/soundEffects';
 
@@ -17,6 +19,8 @@ export function HeaderHUD({
   onOpenAddCustom,
   onOpenCommandPalette,
   onOpenTestLogs,
+  onOpenAbout,
+  onOpenTheme,
   testLogCount = 0,
   audioMuted,
   setAudioMutedState
@@ -101,6 +105,26 @@ export function HeaderHUD({
                 {testLogCount}
               </span>
             )}
+          </button>
+
+          {/* Theme Selector */}
+          <button
+            onClick={() => { playHudClick(); onOpenTheme(); }}
+            className="min-btn py-1.5 px-2.5 text-slate-300 hover:text-white"
+            title="Change deck visual theme"
+          >
+            <Palette className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="hidden xl:inline">Theme</span>
+          </button>
+
+          {/* About WASM//DECK */}
+          <button
+            onClick={() => { playHudClick(); onOpenAbout(); }}
+            className="min-btn py-1.5 px-2.5 text-slate-300 hover:text-white"
+            title="About WASM//DECK specifications & architecture"
+          >
+            <Info className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden xl:inline">About</span>
           </button>
 
           {/* Storage Guide */}

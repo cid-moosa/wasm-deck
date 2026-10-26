@@ -10,6 +10,8 @@ import { NotepadExporterModal } from './components/NotepadExporterModal';
 import { CustomPortModal } from './components/CustomPortModal';
 import { CommandPalette } from './components/CommandPalette';
 import { GameTestLogModal } from './components/GameTestLogModal';
+import { AboutModal } from './components/AboutModal';
+import { ThemeModal } from './components/ThemeModal';
 import { ThreeDeckHero } from './components/ThreeDeckHero';
 import { VERIFIED_WASM_GAMES } from './data/gamesData';
 import { getHardwareTelemetry } from './services/hardwareTelemetry';
@@ -93,7 +95,27 @@ export default function App() {
   const [isAddCustomOpen, setIsAddCustomOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isTestLogOpen, setIsTestLogOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Visual Theme State
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('wasm_deck_theme') || 'liquid-glass';
+    } catch {
+      return 'liquid-glass';
+    }
+  });
+
+  const handleSelectTheme = (newTheme) => {
+    setTheme(newTheme);
+    try {
+      localStorage.setItem('wasm_deck_theme', newTheme);
+    } catch {
+      // ignore local storage errors
+    }
+  };
 
   // Game verification & runtime test logs
   const [testLogs, setTestLogs] = useState(() => {
@@ -302,8 +324,15 @@ export default function App() {
   const currentHeroGame = inspectedGame || allGames[0] || {};
 
   return (
-    <div className="min-h-screen bg-[#090A0F] text-slate-100 flex flex-col clean-bg selection:bg-white selection:text-black">
+    <div data-theme={theme} className={`min-h-screen text-slate-100 flex flex-col clean-bg selection:bg-white selection:text-black relative overflow-x-hidden theme-${theme}`}>
       
+      {/* Ambient Fluid Background Refraction Orbs for Liquid Glass */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="liquid-blob liquid-blob-1" />
+        <div className="liquid-blob liquid-blob-2" />
+        <div className="liquid-blob liquid-blob-3" />
+      </div>
+
       {/* Top Header */}
       <HeaderHUD
         telemetry={telemetry}
@@ -313,6 +342,8 @@ export default function App() {
         onOpenAddCustom={() => setIsAddCustomOpen(true)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         onOpenTestLogs={() => setIsTestLogOpen(true)}
+        onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenTheme={() => setIsThemeOpen(true)}
         testLogCount={testLogs.length}
         audioMuted={audioMuted}
         setAudioMutedState={setAudioMutedState}
@@ -504,8 +535,26 @@ export default function App() {
 
       {isAddCustomOpen && (
         <CustomPortModal 
+          isOpen={isAddCustomOpen}
           onClose={() => setIsAddCustomOpen(false)} 
+          onAddCustomGame={handleAddCustomGame} 
           onAddGame={handleAddCustomGame} 
+        />
+      )}
+
+      {isAboutOpen && (
+        <AboutModal 
+          isOpen={isAboutOpen} 
+          onClose={() => setIsAboutOpen(false)} 
+        />
+      )}
+
+      {isThemeOpen && (
+        <ThemeModal 
+          isOpen={isThemeOpen} 
+          onClose={() => setIsThemeOpen(false)} 
+          currentTheme={theme}
+          onSelectTheme={handleSelectTheme}
         />
       )}
 

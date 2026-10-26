@@ -39,7 +39,7 @@ for (const catId of categoryOrder) {
 
   catalogMarkdown += `### ${categoryTitles[catId] || catId} (${catGames.length})\n\n`;
   for (const game of catGames) {
-    catalogMarkdown += `- **${game.title}** : ${game.primaryUrl}\n`;
+    catalogMarkdown += `${game.title} : ${game.primaryUrl}  \n`;
   }
   catalogMarkdown += `\n`;
 }

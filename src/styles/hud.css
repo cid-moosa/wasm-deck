@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-canvas: #090A0F;
+    --bg-card: #12141D;
+    --bg-card-hover: #181B26;
+    --bg-surface-elevated: #1E2230;
+    --bg-subtle: rgba(255, 255, 255, 0.03);
+    
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.14);
+    --border-focus: rgba(255, 255, 255, 0.28);
+    
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    
+    --accent: #FFFFFF;
+    --accent-blue: #38BDF8;
+    --accent-emerald: #10B981;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    --shadow-card-hover: 0 12px 32px -4px rgba(0, 0, 0, 0.7);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Minimalist sleek scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Minimalist Clean Surfaces */
+.minimal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.minimal-card:hover {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-card-hover);
+  background-color: var(--bg-card-hover);
+}
+
+/* Minimalist Button System */
+.min-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all 0.16s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.min-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-medium);
+  color: #FFFFFF;
+}
+
+.min-btn:active {
+  transform: scale(0.98);
+}
+
+.min-btn-primary {
+  background: #FFFFFF;
+  color: #0A0A0E;
+  border: 1px solid #FFFFFF;
+  font-weight: 600;
+}
+
+.min-btn-primary:hover {
+  background: #E2E8F0;
+  border-color: #E2E8F0;
+  color: #000000;
+}
+
+/* Minimal pill badges */
+.min-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+/* Subtle grid backdrop */
+.clean-bg {
+  background-color: #090A0F;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+/* Shimmer Loading State */
+@keyframes subtle-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  animation: subtle-shimmer 2s infinite ease-in-out;
+}
+
+/* Modal and Theater compatibility with minimalist theme */
+.glass-panel, .glass-panel-heavy {
+  background: #0E1017;
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+}
+
+.hud-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all 0.16s ease;
+  cursor: pointer;
+}
+
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-medium);
+  color: #FFFFFF;
+}
+
+.hud-btn-primary {
+  background: #FFFFFF;
+  color: #0A0A0E;
+  border: 1px solid #FFFFFF;
+  font-weight: 600;
+}
+
+.hud-btn-primary:hover {
+  background: #E2E8F0;
+  border-color: #E2E8F0;
+  color: #000000;
+}
+
+.hud-btn-cyan {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38BDF8;
+}
+
+.hud-btn-cyan:hover {
+  background: rgba(56, 189, 248, 0.2);
+  color: #7DD3FC;
+}

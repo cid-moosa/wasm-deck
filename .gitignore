@@ -1,0 +1,10 @@
+node_modules/
+dist/
+builds/
+.env
+.env.*
+memory.md
+.DS_Store
+*.log
+check_mcp*.js
+.agents/mcp_config.json

@@ -206,6 +206,8 @@ export default function App() {
         if (!favorites.has(game.id)) return false;
       } else if (selectedCategory === "recent") {
         if (!recentlyPlayed.includes(game.id)) return false;
+      } else if (selectedCategory === "popular") {
+        if (!game.popular) return false;
       } else if (selectedCategory !== "all") {
         if (game.category !== selectedCategory) return false;
       }
@@ -237,6 +239,7 @@ export default function App() {
   const categoryCounts = useMemo(() => {
     const counts = {
       all: allGames.length,
+      popular: allGames.filter(g => g.popular).length,
       "aaa-console": 0,
       "nintendo-decomp": 0,
       "retro-arcade": 0,

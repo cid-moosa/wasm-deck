@@ -53,6 +53,16 @@ export function GameCard({
           className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
         />
 
+        {/* Top-Left Popular Tag */}
+        {game.popular && (
+          <div className="absolute top-2 left-2 z-10 pointer-events-none">
+            <span className="text-[10px] font-medium font-mono px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white shadow-sm flex items-center gap-1">
+              <span>🔥</span>
+              <span className="text-[9px] uppercase tracking-wider text-slate-200 font-semibold">Popular</span>
+            </span>
+          </div>
+        )}
+
         {/* Top-Right Favorite / Delete Actions */}
         <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
           {game.custom && (

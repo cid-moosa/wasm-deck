@@ -36,58 +36,92 @@ Play all 560+ WebAssembly games directly in your browser:
 
 All games below are compiled natively to WebAssembly and playable directly in your browser without cloud streaming:
 
+### 🔥 Most Popular & Flagship WebAssembly Ports (31)
+
+Grand Theft Auto V (GTA 5) : https://gta.deloskiyt.pl/  
+Grand Theft Auto: Vice City : https://wasmarcade.com/vice-city  
+Grand Theft Auto III : https://wasmarcade.com/gta3  
+Minecraft 1.8.8 (EaglercraftX WASM) : https://wasmarcade.com/minecraft  
+Call of Duty: Black Ops 1 Zombies : https://vel.gg/bsz  
+Among Us : https://wasm.rip/files/amongus/index.html  
+Counter-Strike 1.6 : https://play-cs.com/  
+Cyberpunk 2077 (Web) : https://cyberpunk2077.lol/  
+The Simpsons: Hit & Run : https://shar-wasm.cjoseph.workers.dev/  
+Need for Speed: Most Wanted (2005) : https://web.nfsmwo.com/  
+Need for Speed: Underground 2 : https://nfsu2.xyz/  
+Super Mario 64 : https://olivers.tools/  
+Super Smash Bros. : https://smash.fun/  
+Halo: Combat Evolved [OpenHaloCE] : https://openhaloce.com/  
+Team Fortress 2 : https://tf2.riddy.workers.dev/  
+Tekken 5: Dark Resurrection : https://tkdr-recomp.pages.dev/  
+Classic Doom & Doom II (WebPrBoom) : https://raz0red.github.io/webprboom/  
+Hollow Knight: Voidheart Edition : https://dezm0n.itch.io/hollow-knight-web-port  
+3D Pinball: Space Cadet : https://ksylvestre.itch.io/space-cadet-pinball  
+FlatOut 2 : https://dezm0n.itch.io/flatout-2-web-port  
+Counter-Strike: Source Bunnyhop : https://bunnyhop.lol/  
+Counter-Strike Surf : https://surfd.net/  
+Diablo (1996) : https://d07riv.github.io/diabloweb/  
+Super Monkey Ball : https://monkeyball-online.pages.dev/  
+Crash Bash : https://crashbash.app/  
+Pro Evolution Soccer 6 (PES 6) : https://pes6.optijuegos.net/  
+Pro Evolution Soccer 2011 (PES 2011) : https://pes11.optijuegos.net/  
+Quake II : https://q2.pieter.com/  
+Doki Doki Literature Club Plus! (DDLC Plus) : https://selenite.cc/resources/semag/ddlcplus/index.html  
+Minecraft Classic : https://classic.minecraft.net/  
+NHL '94 : https://kingof94.web.app/  
+
 ### AAA, Open-World & Console Ports (14)
 
 Grand Theft Auto V (GTA 5) : https://gta.deloskiyt.pl/  
 Grand Theft Auto: Vice City : https://wasmarcade.com/vice-city  
 Grand Theft Auto III : https://wasmarcade.com/gta3  
-The Simpsons: Hit & Run : https://shar-wasm.cjoseph.workers.dev/  
 Call of Duty: Black Ops 1 Zombies : https://vel.gg/bsz  
-Halo: Combat Evolved [OpenHaloCE] : https://openhaloce.com/  
+Cyberpunk 2077 (Web) : https://cyberpunk2077.lol/  
+The Simpsons: Hit & Run : https://shar-wasm.cjoseph.workers.dev/  
 Need for Speed: Most Wanted (2005) : https://web.nfsmwo.com/  
 Need for Speed: Underground 2 : https://nfsu2.xyz/  
-Pro Evolution Soccer 6 (PES 6) : https://pes6.optijuegos.net/  
-Pro Evolution Soccer 2011 (PES 2011) : https://pes11.optijuegos.net/  
+Halo: Combat Evolved [OpenHaloCE] : https://openhaloce.com/  
 Team Fortress 2 : https://tf2.riddy.workers.dev/  
 Tekken 5: Dark Resurrection : https://tkdr-recomp.pages.dev/  
-Cyberpunk 2077 (Web) : https://cyberpunk2077.lol/  
 FlatOut 2 : https://dezm0n.itch.io/flatout-2-web-port  
+Pro Evolution Soccer 6 (PES 6) : https://pes6.optijuegos.net/  
+Pro Evolution Soccer 2011 (PES 2011) : https://pes11.optijuegos.net/  
 
 ### Nintendo Decompilations & Handheld Classics (6)
 
 Super Mario 64 : https://olivers.tools/  
 Super Smash Bros. : https://smash.fun/  
 Super Monkey Ball : https://monkeyball-online.pages.dev/  
-Super Mario Zombies : https://smz.fun/  
 Crash Bash : https://crashbash.app/  
 NHL '94 : https://kingof94.web.app/  
+Super Mario Zombies : https://smz.fun/  
 
 ### Classic PC & FPS Engines (Id Tech, Build, GoldSrc) (15)
 
 Counter-Strike 1.6 : https://play-cs.com/  
-Counter-Strike Surf : https://surfd.net/  
-Counter-Strike: Source Bunnyhop : https://bunnyhop.lol/  
-Quake I (NetQuake) : https://www.netquake.io/  
-Quake II : https://q2.pieter.com/  
-Tremulous : https://webnova360.com/play-tremulous/  
 Classic Doom & Doom II (WebPrBoom) : https://raz0red.github.io/webprboom/  
-Classic Doom (Silent Space Marine) : https://silentspacemarine.com/  
+3D Pinball: Space Cadet : https://ksylvestre.itch.io/space-cadet-pinball  
+Counter-Strike: Source Bunnyhop : https://bunnyhop.lol/  
+Counter-Strike Surf : https://surfd.net/  
 Diablo (1996) : https://d07riv.github.io/diabloweb/  
+Quake II : https://q2.pieter.com/  
+Quake I (NetQuake) : https://www.netquake.io/  
+Tremulous : https://webnova360.com/play-tremulous/  
+Classic Doom (Silent Space Marine) : https://silentspacemarine.com/  
 Descent : https://midzer.de/wasm/descent1/  
 No One Lives Forever (NOLF) : https://playnolf.com/  
 Myth: The Fallen Lords : https://myth.game/  
 LEGO Racers : https://steponit.online/  
-3D Pinball: Space Cadet : https://ksylvestre.itch.io/space-cadet-pinball  
 Beneath a Steel Sky : https://scummweb.tsilva.eu/beneath-a-steel-sky/play  
 
 ### Modern Indie Classics (6)
 
 Minecraft 1.8.8 (EaglercraftX WASM) : https://wasmarcade.com/minecraft  
-Minecraft Classic : https://classic.minecraft.net/  
-Hollow Knight: Voidheart Edition : https://dezm0n.itch.io/hollow-knight-web-port  
 Among Us : https://wasm.rip/files/amongus/index.html  
-Night in the Woods : https://olivers.tools/play/  
+Hollow Knight: Voidheart Edition : https://dezm0n.itch.io/hollow-knight-web-port  
 Doki Doki Literature Club Plus! (DDLC Plus) : https://selenite.cc/resources/semag/ddlcplus/index.html  
+Minecraft Classic : https://classic.minecraft.net/  
+Night in the Woods : https://olivers.tools/play/  
 
 ### Master WebAssembly Game Hubs & Engines (9)
 

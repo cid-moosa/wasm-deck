@@ -33,6 +33,15 @@ const categoryOrder = [
 
 let catalogMarkdown = `## 🎮 Complete Game Directory (${games.length} Verified Ports)\n\nAll games below are compiled natively to WebAssembly and playable directly in your browser without cloud streaming:\n\n`;
 
+const popularGames = games.filter(g => g.popular);
+if (popularGames.length > 0) {
+  catalogMarkdown += `### 🔥 Most Popular & Flagship WebAssembly Ports (${popularGames.length})\n\n`;
+  for (const game of popularGames) {
+    catalogMarkdown += `${game.title} : ${game.primaryUrl}  \n`;
+  }
+  catalogMarkdown += `\n`;
+}
+
 for (const catId of categoryOrder) {
   const catGames = games.filter(g => g.category === catId);
   if (catGames.length === 0) continue;

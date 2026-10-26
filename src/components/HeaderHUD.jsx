@@ -29,7 +29,7 @@ export function HeaderHUD({
   };
 
   return (
-    <header className="sticky top-0 z-40 px-4 sm:px-6 py-3 bg-[#090A0F]/90 backdrop-blur-md border-b border-white/[0.08]">
+    <header className="sticky top-0 z-40 px-4 sm:px-6 py-3 liquid-glass-header">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
         {/* Left: Minimalist Brand Wordmark */}
@@ -79,14 +79,14 @@ export function HeaderHUD({
             </kbd>
           </button>
 
-          {/* Add Port */}
+          {/* Propose / Add Game */}
           <button
             onClick={() => { playHudClick(); onOpenAddCustom(); }}
-            className="min-btn py-1.5 px-3 text-slate-300 hover:text-white"
-            title="Add custom WebAssembly game URL"
+            className="min-btn py-1.5 px-3 text-slate-200 hover:text-white bg-white/[0.08] hover:bg-white/[0.14] border-white/20 shadow-sm"
+            title="Propose a new game URL to GitHub catalog or test locally"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Add Game</span>
+            <Plus className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="hidden sm:inline font-medium">Submit Game</span>
           </button>
 
           {/* Verification Logs */}

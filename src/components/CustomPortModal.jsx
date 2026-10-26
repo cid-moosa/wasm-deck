@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
-import { X, PlusCircle, Globe, Cpu, HardDrive, Check, Sparkles, Image } from 'lucide-react';
+import { 
+  X, 
+  PlusCircle, 
+  Globe, 
+  Cpu, 
+  HardDrive, 
+  Sparkles, 
+  Image, 
+  Send, 
+  ExternalLink,
+  CheckCircle2
+} from 'lucide-react';
 import { playHudClick, playHudBleep } from '../utils/soundEffects';
+
+function GithubIcon({ className = "w-4 h-4" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+  );
+}
 
 export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
   const [title, setTitle] = useState("");
@@ -15,23 +34,63 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
   const [notes, setNotes] = useState("");
   const [mirrorsText, setMirrorsText] = useState("");
   const [error, setError] = useState("");
+  const [copiedUrl, setCopiedUrl] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const validateUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const handleProposeToGitHub = (e) => {
+    if (e) e.preventDefault();
+    if (!primaryUrl.trim()) {
+      setError("Please provide a valid game URL before submitting to GitHub.");
+      return;
+    }
+    if (!validateUrl(primaryUrl.trim())) {
+      setError("Invalid game URL format. Please include http:// or https://");
+      return;
+    }
+
+    const gameTitle = title.trim() || "New WebAssembly Port";
+    const issueTitle = `[Game Proposal]: ${gameTitle}`;
+    const issueBody = `### 🎮 WebAssembly Game Proposal
+
+- **Game Title**: ${gameTitle}
+- **Playable WASM URL**: ${primaryUrl.trim()}
+- **Category / Platform**: ${category}
+- **Engine / Architecture**: ${engine.trim() || 'Custom WebAssembly'}
+- **Estimated Memory**: ${memoryEst.trim() || '150 MB'}
+- **Multiplayer**: ${multiplayer ? 'Yes' : 'No'}
+- **Playable inside Iframe**: ${iframeCompatible ? 'Yes' : 'No'}
+- **Cover / Thumbnail URL**: ${thumbnailUrl.trim() || 'N/A'}
+- **Alternative Mirrors**:
+${mirrorsText.trim() || 'None provided'}
+
+**Technical Notes / Details**:
+${notes.trim() || 'Proposed via WASM//DECK community submit portal.'}
+
+---
+*Submitted from https://cid-moosa.github.io/wasm-deck/*`;
+
+    const githubUrl = `https://github.com/cid-moosa/wasm-deck/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
+    playHudBleep();
+    window.open(githubUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleSaveLocally = (e) => {
     e.preventDefault();
     if (!title.trim()) {
       setError("Please provide a title for the WebAssembly port.");
       return;
     }
-    if (!primaryUrl.trim()) {
-      setError("Please provide a valid URL.");
-      return;
-    }
-
-    try {
-      new URL(primaryUrl);
-    } catch {
+    if (!primaryUrl.trim() || !validateUrl(primaryUrl.trim())) {
       setError("Invalid URL format. Please include http:// or https://");
       return;
     }
@@ -69,26 +128,37 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div className="glass-panel-heavy rounded-2xl max-w-xl w-full border border-white/[0.1] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-modalEnter">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn">
+      <div className="liquid-glass-modal rounded-2xl max-w-xl w-full border border-white/[0.14] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-modalEnter">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-5">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+            <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-inner">
               <PlusCircle className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-display font-semibold text-lg text-white">Inject Custom WASM Port</h2>
-              <p className="text-xs text-slate-400">Add localhost, Cloudflare Worker, or GitHub Page port</p>
+              <h2 className="font-display font-semibold text-lg text-white">Submit or Add Game URL</h2>
+              <p className="text-xs text-slate-400">Propose a new game to the public GitHub catalog or test locally</p>
             </div>
           </div>
           <button 
             onClick={() => { playHudClick(); onClose(); }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#1E2436] transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* Community Info Banner */}
+        <div className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-transparent border border-indigo-500/20 flex items-start gap-3">
+          <GithubIcon className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+          <div className="text-xs">
+            <div className="font-medium text-indigo-200 mb-0.5">Have a WebAssembly game not listed here?</div>
+            <p className="text-slate-400 leading-relaxed">
+              Fill in the game details below and click <strong className="text-white">"Submit to GitHub"</strong>. It will open a pre-filled issue on the repository so the creator can verify and publish it to the live website!
+            </p>
+          </div>
         </div>
 
         {error && (
@@ -97,7 +167,7 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSaveLocally} className="space-y-4 text-xs">
           
           {/* Title */}
           <div>
@@ -106,160 +176,134 @@ export function CustomPortModal({ isOpen, onClose, onAddCustomGame }) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Quake 3 Local Build, Sonic 3 A.I.R., Godot 4 Demo"
-              className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#00F0FF]"
+              placeholder="e.g. Sonic Mania Web, Portal Flash Edition, Godot 4 Web Demo"
+              className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-all"
               required
             />
           </div>
 
           {/* Primary URL */}
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Playable WASM URL *</label>
+            <label className="block text-slate-300 font-semibold mb-1">Playable WASM Game URL *</label>
             <input
               type="url"
               value={primaryUrl}
               onChange={(e) => setPrimaryUrl(e.target.value)}
               placeholder="https://... or http://localhost:8080/index.html"
-              className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-[#00F0FF]"
+              className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-all"
               required
             />
           </div>
 
-          {/* Thumbnail / Cover Art URL */}
-          <div>
-            <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-              <Image className="w-3.5 h-3.5 text-[#00F0FF]" />
-              <span>Cover Art / Thumbnail URL (Optional)</span>
-            </label>
-            <input
-              type="url"
-              value={thumbnailUrl}
-              onChange={(e) => setThumbnailUrl(e.target.value)}
-              placeholder="https://... image URL (auto-generates industrial monogram if blank)"
-              className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-[#00F0FF]"
-            />
-          </div>
-
-          {/* Category & Delivery Grid */}
+          {/* Category & Engine */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-slate-300 font-semibold mb-1">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00F0FF]"
+                className="w-full bg-[#10131C] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-400 transition-all"
               >
-                <option value="aaa-console">AAA & Console Ports</option>
-                <option value="nintendo-decomp">Nintendo & Decomps</option>
-                <option value="classic-pc">Classic PC FPS / RTS / RPG</option>
-                <option value="modern-indie">Modern Indie & Sandbox</option>
-                <option value="github-repos">Self-Host Repos</option>
-                <option value="hubs">Master Directory & Hub</option>
+                <option value="aaa-console">AAA & Console Port</option>
+                <option value="nintendo-decomp">Nintendo Decompilation</option>
+                <option value="classic-pc">Classic PC Port</option>
+                <option value="modern-indie">Modern Indie Web Game</option>
+                <option value="retro-arcade">Retro Arcade (FBNeo)</option>
+                <option value="flash-classics">Flash Classic (Ruffle)</option>
+                <option value="hubs">Master Game Hub</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-slate-300 font-semibold mb-1">Delivery Mode</label>
-              <select
-                value={delivery}
-                onChange={(e) => setDelivery(e.target.value)}
-                className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00F0FF]"
-              >
-                <option value="Instant Stream">Instant Stream (CDN/R2)</option>
-                <option value="BYO-ROM">BYO-ROM (User ROM Required)</option>
-                <option value="GitHub Source">GitHub Source (Self-Host)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Engine & Memory Estimate */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">Engine / Runtime Tag</label>
+              <label className="block text-slate-300 font-semibold mb-1">Engine / Runtime</label>
               <input
                 type="text"
                 value={engine}
                 onChange={(e) => setEngine(e.target.value)}
-                placeholder="e.g. Godot 4 / WASM, Xash3D, Emscripten C++"
-                className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-[#00F0FF]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">Memory Allocation Estimate</label>
-              <input
-                type="text"
-                value={memoryEst}
-                onChange={(e) => setMemoryEst(e.target.value)}
-                placeholder="e.g. 250 MB, 1.2 GB OPFS"
-                className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-[#00F0FF]"
+                placeholder="e.g. Unity WebGL, Godot 4, Emscripten C++"
+                className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-all"
               />
             </div>
           </div>
 
+          {/* Thumbnail / Cover Art URL */}
+          <div>
+            <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+              <Image className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Cover Art / Thumbnail URL (Optional)</span>
+            </label>
+            <input
+              type="url"
+              value={thumbnailUrl}
+              onChange={(e) => setThumbnailUrl(e.target.value)}
+              placeholder="https://... Steam header or screenshot URL"
+              className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 font-mono focus:outline-none focus:border-indigo-400 transition-all"
+            />
+          </div>
+
           {/* Checkboxes: Iframe Compatibility & Multiplayer */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <label className="flex items-center gap-2 p-3 bg-[#10131C] border border-[#1E2436] rounded-lg cursor-pointer hover:border-[#38BDF8]/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <label className="flex items-center gap-2.5 p-3 bg-white/[0.03] border border-white/[0.08] rounded-xl cursor-pointer hover:bg-white/[0.06] transition-all">
               <input
                 type="checkbox"
                 checked={iframeCompatible}
                 onChange={(e) => setIframeCompatible(e.target.checked)}
-                className="rounded bg-[#08090E] border-[#1E2436] text-[#654FF0] focus:ring-0"
+                className="rounded bg-black border-white/20 text-indigo-500 focus:ring-0"
               />
-              <span className="text-slate-300">Playable inside Deck Viewport (Iframe)</span>
+              <span className="text-slate-300">Embeddable in Viewport (Iframe)</span>
             </label>
 
-            <label className="flex items-center gap-2 p-3 bg-[#10131C] border border-[#1E2436] rounded-lg cursor-pointer hover:border-[#38BDF8]/50">
+            <label className="flex items-center gap-2.5 p-3 bg-white/[0.03] border border-white/[0.08] rounded-xl cursor-pointer hover:bg-white/[0.06] transition-all">
               <input
                 type="checkbox"
                 checked={multiplayer}
                 onChange={(e) => setMultiplayer(e.target.checked)}
-                className="rounded bg-[#08090E] border-[#1E2436] text-[#654FF0] focus:ring-0"
+                className="rounded bg-black border-white/20 text-indigo-500 focus:ring-0"
               />
-              <span className="text-slate-300">Multiplayer / Lobby Support</span>
+              <span className="text-slate-300">Multiplayer / Online Lobby</span>
             </label>
           </div>
 
           {/* Technical Notes */}
           <div>
-            <label className="block text-slate-300 font-semibold mb-1">Technical Notes / Architecture Details</label>
+            <label className="block text-slate-300 font-semibold mb-1">Notes / Playability Details</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="e.g. Compiled using Emscripten 3.1.50 with WebGL 2.0 backend."
+              placeholder="e.g. Requires gamepad, runs at 60 FPS on Chrome with WebGPU enabled."
               rows={2}
-              className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-[#00F0FF]"
+              className="w-full bg-[#10131C]/90 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-all"
             />
           </div>
 
-          {/* Optional Mirrors */}
-          <div>
-            <label className="block text-slate-300 font-semibold mb-1">Alternative Mirrors (1 URL per line, optional)</label>
-            <textarea
-              value={mirrorsText}
-              onChange={(e) => setMirrorsText(e.target.value)}
-              placeholder="https://mirror1.pages.dev/&#10;https://mirror2.worker.dev/"
-              rows={2}
-              className="w-full bg-[#10131C] border border-[#1E2436] rounded-lg px-3 py-2 text-white placeholder-slate-500 font-mono text-[11px] focus:outline-none focus:border-[#00F0FF]"
-            />
-          </div>
-
-          {/* Submit and Cancel Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E2436]">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/[0.08]">
             <button
               type="button"
-              onClick={() => { playHudClick(); onClose(); }}
-              className="hud-btn text-xs"
+              onClick={handleProposeToGitHub}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              title="Open GitHub Issue to submit this game URL to the maintainer"
             >
-              Cancel
+              <GithubIcon className="w-4 h-4" />
+              <span>Submit to Creator on GitHub</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
             </button>
-            <button
-              type="submit"
-              className="hud-btn hud-btn-primary text-xs"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Save & Add to Deck</span>
-            </button>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <button
+                type="button"
+                onClick={() => { playHudClick(); onClose(); }}
+                className="py-2.5 px-3.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06] transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="py-2.5 px-4 rounded-xl bg-white/[0.1] hover:bg-white/[0.18] border border-white/20 text-white font-medium transition-all"
+              >
+                Save Locally (Test)
+              </button>
+            </div>
           </div>
 
         </form>

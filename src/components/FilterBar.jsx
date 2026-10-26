@@ -28,7 +28,7 @@ export function FilterBar({
   return (
     <div className="space-y-3 mb-6">
       
-      {/* Category Tabs: Clean Minimalist Horizontal Pills */}
+      {/* Category Tabs: Floating Liquid Glass Horizontal Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
         {CATEGORIES.map(cat => {
           const isActive = selectedCategory === cat.id;
@@ -41,10 +41,10 @@ export function FilterBar({
                 playHudClick();
                 setSelectedCategory(cat.id);
               }}
-              className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer backdrop-blur-md ${
                 isActive 
-                  ? 'bg-white text-black font-semibold shadow-sm' 
-                  : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
+                  ? 'bg-white text-black font-semibold shadow-md shadow-white/10' 
+                  : 'bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.09] hover:border-white/20'
               }`}
             >
               <span>{cat.label}</span>
@@ -58,7 +58,7 @@ export function FilterBar({
         })}
       </div>
 
-      {/* Secondary Row: Search & Minimal Filters */}
+      {/* Secondary Row: Search & Liquid Filters */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         
         {/* Search Input */}
@@ -69,7 +69,7 @@ export function FilterBar({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search 560+ WebAssembly games..."
-            className="w-full bg-[#12141D] border border-white/[0.08] rounded-lg pl-8 pr-8 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-white/25 transition-colors"
+            className="w-full bg-white/[0.05] backdrop-blur-md border border-white/[0.12] rounded-xl pl-8 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] transition-all"
           />
           {searchQuery && (
             <button 

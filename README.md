@@ -11,6 +11,16 @@ WASM//DECK is a high-craft, client-side WebAssembly game launcher that allows us
 
 ---
 
+## 🌐 Live Website
+
+Play all 560+ WebAssembly games directly in your browser:
+
+### 🎮 **[https://cid-moosa.github.io/wasm-deck/](https://cid-moosa.github.io/wasm-deck/)**
+
+*Zero downloads, zero plugins, and zero cloud streaming — 100% native client-side execution.*
+
+---
+
 ## ✨ Features
 
 - **560+ Verified Native Ports**: AAA/Console ports (GTA V, GTA Vice City, GTA III, The Simpsons Hit & Run), 220+ Capcom & Neo Geo retro arcade classics via FBNeo WASM, and 280+ Flash games via Ruffle WASM.

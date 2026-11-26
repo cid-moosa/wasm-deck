@@ -110,7 +110,8 @@ function HomeContent() {
   useEffect(() => {
     const controller = new AbortController();
     setCatalogStatus("loading");
-    fetch("/catalog.json", { signal: controller.signal })
+    const catalogUrl = `${import.meta.env.BASE_URL || "./"}catalog.json`;
+    fetch(catalogUrl, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
         return response.json() as Promise<GameRecord[]>;

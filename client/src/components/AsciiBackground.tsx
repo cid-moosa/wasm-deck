@@ -53,6 +53,20 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
     },
   };
 
+  const triggerFeed = (x: number, y: number, count = 6) => {
+    controllerRef.current?.feed?.(x, y, count);
+    const toastId = Date.now();
+    const isKoi = asciiAnimation === "koi";
+    const text = isKoi ? `🐟 Fed the Koi (+${count} pellets)` : `⚡ ASCII Pulse Triggered`;
+    setToasts((prev) => [
+      ...prev.slice(-2),
+      { id: toastId, text, x, y: Math.max(80, y - 25) },
+    ]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((item) => item.id !== toastId));
+    }, 2400);
+  };
+
   // Initialize and run selected ASCII animation
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -117,20 +131,6 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
       }
     };
 
-    const triggerFeed = (x: number, y: number, count = 4) => {
-      controllerRef.current?.feed?.(x, y, count);
-      const toastId = Date.now();
-      const isKoi = asciiAnimation === "koi";
-      const text = isKoi ? `🐟 Fed the Koi (+${count} pellets)` : `⚡ ASCII Pulse Triggered`;
-      setToasts((prev) => [
-        ...prev.slice(-2),
-        { id: toastId, text, x, y: Math.max(80, y - 25) },
-      ]);
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((item) => item.id !== toastId));
-      }, 2200);
-    };
-
     const handlePointerMove = (e: PointerEvent) => {
       pointerPos.current = { x: e.clientX, y: e.clientY };
       if (controllerRef.current?.onPointerMove) {
@@ -144,7 +144,7 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
         'button, a, input, select, textarea, [role="button"], .game-card, .dialog-card, .player-shell, .settings-panel'
       );
       if (!isInteractive) {
-        triggerFeed(e.clientX, e.clientY, 4);
+        triggerFeed(e.clientX, e.clientY, 6);
       }
     };
 
@@ -156,7 +156,7 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
           active instanceof HTMLTextAreaElement ||
           active?.getAttribute("contenteditable") === "true";
         if (!isInput) {
-          triggerFeed(pointerPos.current.x, pointerPos.current.y, 5);
+          triggerFeed(pointerPos.current.x, pointerPos.current.y, 6);
         }
       }
     };
@@ -167,7 +167,7 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
       triggerFeed(
         x !== undefined ? x : pointerPos.current.x,
         y !== undefined ? y : pointerPos.current.y,
-        count !== undefined ? count : 5
+        count !== undefined ? count : 6
       );
     };
 
@@ -252,6 +252,25 @@ export default function AsciiBackground({ className = "" }: AsciiBackgroundProps
           <span>{toast.text}</span>
         </div>
       ))}
+      <button
+        type="button"
+        className="floating-feed-pill"
+        data-testid="floating-feed-button"
+        title={
+          asciiAnimation === "koi"
+            ? "Secret Easter Egg: Feed the Koi fish (or press 'F')"
+            : "Trigger ASCII ripple pulse (or press 'F')"
+        }
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          triggerFeed(window.innerWidth / 2, window.innerHeight * 0.45, 6);
+        }}
+      >
+        <span className="feed-emoji">{asciiAnimation === "koi" ? "🐟" : "⚡"}</span>
+        <span className="feed-label">{asciiAnimation === "koi" ? "Feed Koi" : "Pulse"}</span>
+        <kbd className="feed-kbd">F</kbd>
+      </button>
     </>
   );
 }

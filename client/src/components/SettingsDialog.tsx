@@ -299,9 +299,9 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
                               ? { backgroundColor: accent.hex, color: "#0b0d09" }
                               : undefined
                           }
-                          className={`rounded-lg py-1.5 px-2 text-center text-xs font-medium transition-all ${
+                          className={`rounded-lg py-1.5 px-2 text-center text-xs font-semibold transition-all ${
                             isActive
-                              ? "font-bold shadow-sm"
+                              ? "!text-black font-bold shadow-md ring-1 ring-black/20"
                               : "bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--text)]"
                           }`}
                         >
@@ -332,9 +332,9 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
                                 ? { backgroundColor: accent.hex, color: "#0b0d09" }
                                 : undefined
                             }
-                            className={`rounded-lg py-1.5 px-1 text-center text-xs font-medium capitalize transition-all ${
+                            className={`rounded-lg py-1.5 px-1 text-center text-xs font-semibold capitalize transition-all ${
                               isActive
-                                ? "font-bold shadow-sm"
+                                ? "!text-black font-bold shadow-md ring-1 ring-black/20"
                                 : "bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--text)]"
                             }`}
                           >

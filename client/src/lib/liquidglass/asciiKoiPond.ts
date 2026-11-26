@@ -572,11 +572,11 @@ export function createAsciiKoiPond(opts: AsciiKoiPondOptions = {}): AsciiKoiPond
   }
 
   function mealFor(f: KoiFish, list: FoodPellet[], hx: number, hy: number): FoodPellet | null {
-    if (f.appetite < 0.18 || t < f.fullUntil) return null;
+    if (t < f.fullUntil && f.appetite < 0.4) return null;
     let best: FoodPellet | null = null;
-    let bd = (240 + 320 * f.appetite) * K;
+    let bd = Math.max(vw, vh) * 2.5;
     for (const p of list) {
-      const d = Math.hypot(p.x - hx, p.y - hy) + p.claim * 60 * K;
+      const d = Math.hypot(p.x - hx, p.y - hy) + p.claim * 40 * K;
       if (d < bd) {
         bd = d;
         best = p;
@@ -1311,8 +1311,8 @@ export function createAsciiKoiPond(opts: AsciiKoiPondOptions = {}): AsciiKoiPond
     for (const p of food) {
       if (!p.landed && t >= p.land) {
         p.landed = true;
-        rings.push({ x: p.x, y: p.y, born: t, k: K * 0.45, small: true, tiny: true });
-        stamp(p.x, p.y, 1, 0.25);
+        rings.push({ x: p.x, y: p.y, born: t, k: K * 1.3, small: false });
+        stamp(p.x, p.y, 1.8, 0.6);
       }
       if (p.landed && p.eaten < 0) {
         p.x += Math.sin(t * 0.6 + p.seed) * 2.4 * K * dt;
@@ -1333,11 +1333,12 @@ export function createAsciiKoiPond(opts: AsciiKoiPondOptions = {}): AsciiKoiPond
   function drawFood(): void {
     if (!ctx || !P || (!food.length && !bubbles.length)) return;
     const px = (v: number): number => Math.round(v * dpr) / dpr;
-    const body = css(pack(P.food));
-    const top = css(pack(mixC(P.food, [255, 236, 200], 0.35)));
-    const shadow = P.dark ? '#000' : css(pack(mul(P.water, 0.5)));
-    const pw = cw * 0.62;
-    const ph = ch * 0.48;
+    const body = '#f59e0b'; // Vibrant amber gold
+    const glow = 'rgba(251, 191, 36, 0.45)';
+    const top = '#fef3c7'; // Crisp glowing highlight
+    const shadow = 'rgba(0, 0, 0, 0.65)';
+    const pw = Math.max(12, cw * 1.3) * K;
+    const ph = Math.max(9, ch * 1.0) * K;
 
     for (const p of food) {
       if (t < p.born || p.eaten >= 0) continue;
@@ -1361,22 +1362,44 @@ export function createAsciiKoiPond(opts: AsciiKoiPondOptions = {}): AsciiKoiPond
       const h = ph * big;
       const X = px(x - w / 2);
       const Y = px(y - h / 2);
-      ctx.globalAlpha = a * (P.dark ? 0.55 : 0.28);
+
+      // Outer golden water ripple glow
+      ctx.globalAlpha = a * 0.4;
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      if (typeof ctx.arc === 'function') {
+        ctx.arc(px(x), px(y), px(Math.max(w, h) * 1.2), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Shadow
+      ctx.globalAlpha = a * 0.55;
       ctx.fillStyle = shadow;
-      ctx.fillRect(px(X + pw * (0.7 + hh * 5)), px(Y + ph * (0.8 + hh * 4)), px(w), px(h));
-      ctx.globalAlpha = a * (p.landed && t - p.land > FLOAT * 0.6 ? 0.85 : 1);
+      ctx.fillRect(px(X + pw * (0.6 + hh * 4)), px(Y + ph * (0.6 + hh * 3)), px(w), px(h));
+
+      // Golden Pellet Body
+      ctx.globalAlpha = a;
       ctx.fillStyle = body;
       ctx.fillRect(X, Y, px(w), px(h));
+
+      // Top Specular Highlight
       ctx.fillStyle = top;
-      ctx.fillRect(X, Y, px(w), px(Math.max(1, h * 0.34)));
+      ctx.fillRect(X, Y, px(w), px(Math.max(2, h * 0.38)));
+
+      // ASCII Character Overlay on Food Pellet
+      ctx.font = `bold ${Math.round(ph * 0.85)}px ${MONO}`;
+      ctx.fillStyle = '#1c1917';
+      ctx.globalAlpha = a * 0.8;
+      ctx.fillText('•', px(x - pw * 0.2), px(y + ph * 0.3));
     }
+
     if (bubbles.length) {
-      ctx.font = `600 ${Math.round(ch * 0.74)}px ${MONO}`;
+      ctx.font = `bold ${Math.round(ch * 0.9)}px ${MONO}`;
       ctx.fillStyle = css(pack(P.dot));
       for (const b of bubbles) {
         const u = (t - b.born) / 0.75;
         if (u < 0 || u >= 1) continue;
-        ctx.globalAlpha = 0.85 * (1 - u * u);
+        ctx.globalAlpha = 0.95 * (1 - u * u);
         ctx.fillText(u < 0.35 ? 'o' : u < 0.7 ? '°' : '·', b.x, b.y - u * ch * 0.8);
       }
     }
@@ -1676,19 +1699,16 @@ export function createAsciiKoiPond(opts: AsciiKoiPondOptions = {}): AsciiKoiPond
       });
     }
 
-    // Alert nearest fish to turn and swim excitedly towards the food
+    // Alert all fish in the pond to turn and rush excitedly towards the food
     fish.forEach((f) => {
-      const hx = headX(f);
-      const hy = headY(f);
-      if (Math.hypot(clientX - hx, clientY - hy) < 380 * K) {
-        f.kick = Math.max(f.kick, 0.9);
-        f.rise = 1.0;
-        f.fullUntil = 0;
-        f.seekFrom = t;
-        f.seekUntil = t + 6.0;
-        f.seekX = clientX;
-        f.seekY = clientY;
-      }
+      f.kick = Math.max(f.kick, 1.0);
+      f.rise = 1.0;
+      f.fullUntil = 0;
+      f.appetite = Math.max(f.appetite, 0.85);
+      f.seekFrom = t;
+      f.seekUntil = t + 10.0;
+      f.seekX = clientX;
+      f.seekY = clientY;
     });
 
     dirty = true;

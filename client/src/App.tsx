@@ -2,16 +2,20 @@ import { domMax, LazyMotion, MotionConfig } from "framer-motion";
 import NotFound from "@/pages/NotFound";
 import Home from "@/pages/Home";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { Route, Switch } from "wouter";
+import { Route, Router, Switch } from "wouter";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-function Router() {
+const routerBase = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+
+function AppRoutes() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <Router base={routerBase}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/404" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
   );
 }
 
@@ -21,7 +25,7 @@ export default function App() {
       <MotionConfig reducedMotion="user">
         <LazyMotion features={domMax} strict>
           <ErrorBoundary>
-            <Router />
+            <AppRoutes />
           </ErrorBoundary>
         </LazyMotion>
       </MotionConfig>
